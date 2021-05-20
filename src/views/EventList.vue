@@ -14,6 +14,7 @@ export default {
   components: {
     EventCard,
   },
+  props: ['page'],
 
   data() {
     return {
@@ -24,7 +25,7 @@ export default {
   //axios.get(
   //  'https://my-json-server.typicode.com/Kenyg369/real-world-vue/events'
   //  )
-     EventService.getEvents()
+     EventService.getEvents(2, this.page)
       .then(response => {
         this.events = response.data
       })
