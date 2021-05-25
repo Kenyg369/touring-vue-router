@@ -1,5 +1,5 @@
 <template>
-  <router-link class= "event-link" :to= "{ name: 'EventDetails', params:{ id: event.id } }">
+  <router-link class= "event-link" :to= "{ name: 'EventLayout', params:{ id: event.id } }">
     <div class="event-card">
       <p>@{{event.time}} on @{{event.data}}, 2022</p>
       <h3>{{event.title}}</h3>

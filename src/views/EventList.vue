@@ -1,7 +1,6 @@
 <template>
   <div class ="events">
     <EventCard v-for="event in events" :key="event.id" :event="event" />
-
     <div class="pagination">
       <router-link 
         id="paper-prev"
@@ -10,7 +9,6 @@
         v-if="page !=1"
         >&#60; prev</router-link
       >
-
       <router-link
         id="paper-next" 
         :to="{ name: 'EventList', query:{ page:page+1 } }"
@@ -34,14 +32,12 @@ export default {
   components: {
     EventCard
   },
-
   data() {
     return {
       events: null,
       totalEvents: 0
     }
   },
-
   created() {
     watchEffect(() => {
       this.events = null    
