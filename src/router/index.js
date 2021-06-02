@@ -5,6 +5,8 @@ import EventLayout from "@/views/event/Layout.vue";
 import EventDetails from "@/views/event/Details.vue";
 import EventRegister from "@/views/event/Register.vue";
 import EventEdit from "@/views/event/Edit.vue";
+import NotFound from "@/views/event/NotFound.vue";
+import NetworkError from "@/views/event/NetworkError";
 
 const routes = [
   {
@@ -18,7 +20,7 @@ const routes = [
     //3.Transformation: It's lucky that our URL has "page" as its query parameter
     //,which we want to keep calling it "page"
     //where it could be route => ({page:parseInt(route.query.q)}), if URL is /event?_q = x
-    //4.**Note this props function mode is a anoynous fucntion
+    //4.**Note this props function mode is a anoynous fucntion which provides a direct access to the designated page
     //,homepage doesn't have ?_page query parameter which makes page 1
     props: route => ({ page: parseInt(route.query.page) || 1 })
   },
@@ -51,7 +53,26 @@ const routes = [
     ]
   },
   {
-   path:'/event/:afterEvent(.*)',
+    //Match all routes that don't match an existing route
+    path: "/:catchAll(.*)",
+    name: "NotFound",    
+    component: NotFound,
+  },
+  {
+    path: '/404/:resource',
+    name: '404Resource',
+    component: NotFound,
+    props: true,
+  },
+  {
+    path: '/network-error',
+    name: 'NetworkError',
+    component: NetworkError,
+  },
+  {
+    //Match on /event/, and capture everything else in afterEvent
+    //Using (.*) so that it will include/ in the match (by default it doesn't)
+   path:"/event/:afterEvent(.*)",
    redirect: to => {
      return { path :'/events/'+ to.params.afterEvent }
    },

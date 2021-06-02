@@ -29,8 +29,17 @@ export default{
       this.event = response.data    
     })
     .catch(error => {
-      console.log(error)    
+      if (error.response && error.response.status == 404){
+        this.$router.push({
+        name:'404Resource',
+        // with a parameter of string 'event', not a element called event
+        //otherwise written as { resource:event } 
+        params: { resource: 'event of '+ this.id }
+        })
+      }else{
+        this.$router.push({ name: 'NetworkError' })
+      }
     })
-  }
+  }     
 }
 </script>
