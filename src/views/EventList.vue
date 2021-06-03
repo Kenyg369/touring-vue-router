@@ -24,7 +24,6 @@
 // @ is an alias to /src
 import EventCard from '@/components/EventCard.vue'
 import EventService from '@/services/EventService.js'
-import { watchEffect } from 'vue'
 
 export default {
   name: "EventList",
@@ -38,20 +37,34 @@ export default {
       totalEvents: 0
     }
   },
-  created() {
-    watchEffect(() => {
-      this.events = null    
-      EventService.getEvents(2, this.page)
-        .then(response => {
-          this.events = response.data
-          this.totalEvents = response.headers['x-total-count']
+  // Enter is only called when a route is being entered from a different one
+  beforeRouteEnter(routeTo, routeFrom, next) {
+    EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
+      .then(response => {
+        // "next" tells Vue Router to wait until the API call returns, before routing 
+        next(comp =>{
+          comp.events = response.data
+          comp.totalEvents = response.headers['x-total-count']
         })
-        .catch(error => {
-          console.log(error)
       })
-    }  
-    )
+      .catch(() => {
+        next({ name: 'NetWorkError' })      
+      })
   },
+
+  // Now we can use "this", since component is created.
+  beforeRouteUpdate(routeTo) {
+    //"Return" the promise so Vue knows to wait on the API before loading the page
+    return EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
+      .then(response => {
+        this.events = response.data
+        this.totalEvents = response.headers['x-total-count']  
+      })
+      .catch(() => {
+        return { name: 'NetWorkError' }      
+      })
+  },
+
 
   computed:{
     hasNextPage() {
