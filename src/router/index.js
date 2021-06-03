@@ -10,8 +10,6 @@ import NetworkError from "@/views/event/NetworkError";
 import Nprogress from 'nprogress'
 import EventService from "@/services/EventService.js"
 import GStore from '@/store'
-
-
 const routes = [
   {
     path: "/",
