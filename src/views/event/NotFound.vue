@@ -4,7 +4,7 @@
   <router-link :to= "{ name: 'EventList' }">Back to the home page</router-link>
 </template>
 
-<script>
+<script lang="ts">
   export default{
     props:{
       resource:{

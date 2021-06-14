@@ -5,9 +5,13 @@
   </div>
 </template>>
 
-<script>
-
+<script lang="ts">
 export default{
-  props: ['event'],
+  props: {
+    event: {
+      type: Object,
+      required : true
+    }
+  }  
 }
 </script>

@@ -11,7 +11,7 @@
   <router-view />
 </template>
 
-<script>
+<script lang= "ts">
 export default {
   inject: ['GStore'],
 }

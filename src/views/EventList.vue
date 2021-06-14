@@ -20,24 +20,37 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 // @ is an alias to /src
-import EventCard from '@/components/EventCard.vue'
-import EventService from '@/services/EventService.js'
+import { defineComponent, reactive, computed } from 'vue'
+import EventCard from '../components/EventCard.vue'
+import EventService from '../services/EventService'
+import { Event } from "../type"
 
-export default {
+export default defineComponent({
   name: "EventList",
-  props: ['page'],
+  props: {
+    page:{
+      type: Number,
+      required: true,
+    }  
+  },
   components: {
     EventCard
   },
-  data() {
-    return {
+  setup(props,_) {
+    const eventItem = reactive ({
       events: null,
       totalEvents: 0
-    }
-  },
-  // Enter is only called when a route is being entered from a different one
+    })
+
+    const hasNextPage = computed(() => {
+      var totalPages = Math.ceil(eventItem.totalEvents / 2)
+      return (props.page < totalPages)
+    })
+  }
+  
+/*   // Enter is only called when a route is being entered from a different one
   beforeRouteEnter(routeTo, routeFrom, next) {
     EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
       .then(response => {
@@ -63,16 +76,8 @@ export default {
       .catch(() => {
         return { name: 'NetWorkError' }      
       })
-  },
-
-
-  computed:{
-    hasNextPage() {
-      var totalPages = Math.ceil(this.totalEvents / 2)
-      return (this.page < totalPages)
-    }
-  }
-}
+  } */
+})
 </script>
 
 <style scoped>
