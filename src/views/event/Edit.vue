@@ -1,16 +1,18 @@
 <template>
-  <div v-if = "event">
-    <p>Edit the event here</p>     
+  <div v-if="event">
+    <p>Edit the event here</p>
   </div>
 </template>>
 
 <script lang="ts">
-export default{
+import { Event } from "@/type";
+import { defineComponent, PropType } from "vue";
+export default defineComponent({
   props: {
-    event:{
-      type:Object ,
-      required: true
-    }
-  }
-}
+    event: {
+      type: Object as PropType<Event>,
+      required: true,
+    },
+  },
+});
 </script>

@@ -1,32 +1,38 @@
 <template>
-  <div v-if = "event">
-    <p>Register for the event here</p> 
-    <button @click="register">Register Me</button>    
+  <div v-if="event">
+    <p>Register for the event here</p>
+    <button @click="register">Register Me</button>
   </div>
 </template>>
 
-<script>
-export default{
-  props: ['event'],
-  inject: ['GStore'],
-  methods:{
-    register(){
-      //Call to API
-      //If registered then redirect to event details
+<script lang="ts">
+import { Event } from "../../type";
+import { defineComponent, PropType } from "vue";
+import { useFlashMessage } from "../../Composables/useFlashMessage";
 
-      this.GStore.flashMessage = 'you are successfully registered for' + this.event.title
+export default defineComponent({
+  props: {
+    event: {
+      type: Object as PropType<Event>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const { showMessage } = useFlashMessage();
 
-      setTimeout(() => {
-        this.Gstore.flashMessage = ''
-      }, 3000)
+    const register = () => {
+      showMessage({
+        message: `you are successfully registered for ${props.event.title}`,
+        to: {
+          name: "EventDetails",
+          params: { id: props.event.id },
+        },
+      });
+    };
 
-      //Note: this.$router.push({xxx}) and <router-link :to={xxx}>> have same object and same syntax
-      //it's because when call <router-link>,it's calling this.$router.push from router-link definition
-      this.$router.push({
-        name:'EventDetails',
-        params: { id: this.event.id }
-      })
-    }
-  }
-}
+    return {
+      register,
+    };
+  },
+});
 </script>

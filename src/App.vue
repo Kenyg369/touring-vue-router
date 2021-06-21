@@ -1,33 +1,38 @@
 <template>
   <div id="app">
-    <div id ="flashMessage" v-if="GStore.flashMessage" >
-      {{ GStore.flashMessage }}
-    </div> 
+    <div id="flashMessage" v-if="flashMessage">
+      {{ flashMessage }}
+    </div>
     <div id="nav">
-      <router-link :to="{name: 'EventList'}">Events</router-link> |
-      <router-link :to="{name: 'About'}">About</router-link>
+      <router-link :to="{ name: 'EventList' }">Events</router-link>
+      |
+      <router-link :to="{ name: 'About' }">About</router-link>
     </div>
   </div>
   <router-view />
 </template>
 
 <script lang= "ts">
+import { useFlashMessage } from "./Composables/useFlashMessage";
 export default {
-  inject: ['GStore'],
-}
+  setup() {
+    const { flashMessage } = useFlashMessage();
+    return {
+      flashMessage,
+    };
+  },
+};
 </script>
 
-
 <style>
-
 @keyframes yellowfade {
   from {
-    background: yellow ;
+    background: yellow;
   }
   to {
     background: transparent;
-  } 
-}  
+  }
+}
 #flashMessage {
   animation-name: yellowfade;
   animation-duration: 3s;

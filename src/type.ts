@@ -1,11 +1,11 @@
 export interface Event {
-    id: Number
-    category: String
-    title: String
-    description: String
-    location: String
-    date: String
-    time: String
-    petsAllowed: String
-    organizer: String   
-} 
+    id: number
+    category: string
+    title: string
+    description: string
+    location: string
+    date: string
+    time: string
+    petsAllowed: string
+    organizer: string
+}

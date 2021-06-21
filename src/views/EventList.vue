@@ -1,17 +1,21 @@
 <template>
-  <div class ="events">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
+  <div class="events">
+    <EventCard
+      v-for="event in eventItem.events"
+      :key="event.id"
+      :event="event"
+    />
     <div class="pagination">
-      <router-link 
+      <router-link
         id="paper-prev"
-        :to="{ name: 'EventList', query:{ page:page-1 } }"
+        :to="{ name: 'EventList', query: { page: page - 1 } }"
         rel="prev"
-        v-if="page !=1"
+        v-if="page != 1"
         >&#60; prev</router-link
       >
       <router-link
-        id="paper-next" 
-        :to="{ name: 'EventList', query:{ page:page+1 } }"
+        id="paper-next"
+        :to="{ name: 'EventList', query: { page: page + 1 } }"
         rel="next"
         v-if="hasNextPage"
         >next &#62;</router-link
@@ -22,66 +26,55 @@
 
 <script lang="ts">
 // @ is an alias to /src
-import { defineComponent, reactive, computed } from 'vue'
-import EventCard from '../components/EventCard.vue'
-import EventService from '../services/EventService'
-import { Event } from "../type"
+import { defineComponent, reactive, computed, watch } from "vue";
+import EventCard from "../components/EventCard.vue";
+import { getPageEvents } from "../services/EventService";
+import { Event } from "../type";
 
 export default defineComponent({
   name: "EventList",
   props: {
-    page:{
+    page: {
       type: Number,
       required: true,
-    }  
+    },
   },
   components: {
-    EventCard
+    EventCard,
   },
-  setup(props,_) {
-    const eventItem = reactive ({
-      events: null,
-      totalEvents: 0
-    })
+  setup(props, _) {
+    const eventItem = reactive({
+      events: [] as Event[],
+      totalEvents: 0,
+    });
 
-    const hasNextPage = computed(() => {
-      var totalPages = Math.ceil(eventItem.totalEvents / 2)
-      return (props.page < totalPages)
-    })
-  }
-  
-/*   // Enter is only called when a route is being entered from a different one
-  beforeRouteEnter(routeTo, routeFrom, next) {
-    EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
-      .then(response => {
-        // "next" tells Vue Router to wait until the API call returns, before routing 
-        next(comp =>{
-          comp.events = response.data
-          comp.totalEvents = response.headers['x-total-count']
-        })
-      })
-      .catch(() => {
-        next({ name: 'NetWorkError' })      
-      })
+    const hasNextPage = computed((): boolean => {
+      var totalPages = Math.ceil(eventItem.totalEvents / 2);
+      return props.page < totalPages;
+    });
+
+    watch(
+      () => props.page,
+      () => {
+        getPageEvents(2, props.page)
+          .then((response) => {
+            eventItem.events = response.data;
+            eventItem.totalEvents = response.headers["x-total-count"];
+          })
+          .catch(() => {
+            return { name: "NetWorkError" };
+          });
+      },
+      { immediate: true }
+    );
+
+    return { eventItem, hasNextPage };
   },
-
-  // Now we can use "this", since component is created.
-  beforeRouteUpdate(routeTo) {
-    //"Return" the promise so Vue knows to wait on the API before loading the page
-    return EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
-      .then(response => {
-        this.events = response.data
-        this.totalEvents = response.headers['x-total-count']  
-      })
-      .catch(() => {
-        return { name: 'NetWorkError' }      
-      })
-  } */
-})
+});
 </script>
 
 <style scoped>
-.events{
+.events {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -93,10 +86,10 @@ export default defineComponent({
 .pagination a {
   flex: 1;
   text-decoration: none;
-  color:#2c3e50;
+  color: #2c3e50;
 }
 #page-prev {
-  text-align: left ;
+  text-align: left;
 }
 #page-next {
   text-align: right;
